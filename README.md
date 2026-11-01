@@ -4,10 +4,16 @@ The landing page and docs for [Lagrange](https://github.com/three-agent-problem/
 
 ```sh
 npm ci
-npm run dev      # http://localhost:4321
+npm run dev      # http://localhost:4321/site/
 npm run build    # static site in dist/
 npm run preview  # serve dist/
 ```
+
+## Deploy
+
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It builds the site and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves at **https://three-agent-problem.github.io/site/**.
+
+The site is built for the `/site` base path. Links on the landing page go through `u()`, and a small rehype plugin in `astro.config.mjs` prefixes root-relative links in the docs. Write links as `/docs/...` in both places. For a custom domain, set `SITE_URL` and `BASE_PATH=/` (in the workflow, or as the defaults in `astro.config.mjs`), and add the domain in the repo's Pages settings.
 
 Node 22.12 or newer. Astro is pinned to 6.4.8 and Starlight to 0.40.0. Astro 7 needs Node 22.23+.
 
@@ -19,8 +25,6 @@ Node 22.12 or newer. Astro is pinned to 6.4.8 and Starlight to 0.40.0. Astro 7 n
 | `public/shots/` | Screenshots of the web app, cropped from `lagrange/docs/screenshots`. |
 
 The docs follow the Lagrange README. When a feature or a flag changes there, change it here too.
-
-Set `site` in `astro.config.mjs` once the domain is known; Starlight then also writes a sitemap.
 
 | | |
 |---|---|

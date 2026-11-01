@@ -3,7 +3,29 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 
 // The landing page is src/pages/index.astro; the docs live under /docs/ (src/content/docs/docs).
+// It's served from GitHub Pages at <SITE_URL><BASE_PATH>; with a custom domain, set BASE_PATH=/.
+const site = process.env.SITE_URL ?? 'https://three-agent-problem.github.io'
+const base = process.env.BASE_PATH ?? '/site'
+
+// withBase prefixes root-relative links in the docs (/docs/quickstart/) with the base path,
+// in Markdown links and in MDX components' href props.
+function withBase(base) {
+  const prefix = base.replace(/\/$/, '')
+  const fix = (v) => (typeof v === 'string' && v.startsWith('/') && !v.startsWith('//') && !v.startsWith(prefix + '/') ? prefix + v : v)
+  const walk = (node) => {
+    if (node.type === 'element' && node.tagName === 'a' && node.properties) node.properties.href = fix(node.properties.href)
+    if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+      for (const attr of node.attributes ?? []) if (attr.name === 'href') attr.value = fix(attr.value)
+    }
+    node.children?.forEach(walk)
+  }
+  return () => walk
+}
+
 export default defineConfig({
+  site,
+  base,
+  markdown: { rehypePlugins: [withBase(base)] },
   integrations: [
     starlight({
       title: 'Lagrange',

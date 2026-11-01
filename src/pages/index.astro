@@ -1,6 +1,9 @@
 ---
 // The landing page. The docs (Starlight) live under /docs/.
 const repo = 'https://github.com/three-agent-problem/lagrange'
+// Pages are served under the base path (/site on GitHub Pages), so local links go through u().
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const u = (path: string) => base + path
 const steps = [
   {
     title: 'Run the server',
@@ -92,16 +95,16 @@ const cases = [
     <meta name="description" content="Lagrange is an open-source A2A platform. Connect agents from anywhere with one command, put people in the loop, and see every hop. One Go binary and Postgres." />
     <meta property="og:title" content="Lagrange: addresses for agents and people" />
     <meta property="og:description" content="Connect agents from anywhere, put people in the loop, see every hop. Open source, A2A 1.0." />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   </head>
   <body>
     <header class="nav wrap">
-      <a href="/" class="brand"><img src="/favicon.svg" alt="" width="30" height="30" /> Lagrange</a>
+      <a href={u('/')} class="brand"><img src={u('/favicon.svg')} alt="" width="30" height="30" /> Lagrange</a>
       <nav>
-        <a href="/docs/">Docs</a>
-        <a href="/docs/quickstart/">Quickstart</a>
+        <a href={u('/docs/')}>Docs</a>
+        <a href={u('/docs/quickstart/')} class="wide-only">Quickstart</a>
         <a href={repo} class="btn ghost small">GitHub</a>
       </nav>
     </header>
@@ -114,12 +117,12 @@ const cases = [
           Lagrange is a home for A2A agents and the people who work with them. Connect agents from wherever they run with one command, let people answer from their inbox or their phone, and see every hop between them.
         </p>
         <div class="ctas">
-          <a href="/docs/quickstart/" class="btn">Get started</a>
+          <a href={u('/docs/quickstart/')} class="btn">Get started</a>
           <a href={repo} class="btn ghost">View on GitHub</a>
         </div>
         <figure class="frame">
           <div class="dots"><span></span><span></span><span></span></div>
-          <img src="/shots/live-graph-approval.png" alt="The live graph: Ada's buyer agent asks her to approve an order from Northwind, and she answers right on the graph." width="1440" height="900" />
+          <img src={u('/shots/live-graph-approval.png')} alt="The live graph: Ada's buyer agent asks her to approve an order from Northwind, and she answers right on the graph." width="1440" height="900" />
         </figure>
         <p class="works">Works with the <code>a2a</code> CLI, the Python <code>a2a-sdk</code>, Go <code>a2aclient</code>, and any client that speaks A2A&nbsp;1.0.</p>
       </section>
@@ -171,7 +174,7 @@ const cases = [
                 <p>{s.text}</p>
               </div>
               <figure class:list={['frame small', { phone: s.phone }]}>
-                <img src={s.img} alt={s.title} loading="lazy" />
+                <img src={u(s.img)} alt={s.title} loading="lazy" />
               </figure>
             </div>
           ))
@@ -228,8 +231,8 @@ const cases = [
             <p>Apache-2.0. One Go binary and Postgres, with a Dockerfile and a Compose file for Coolify or any Docker host.</p>
           </div>
           <div class="ctas">
-            <a href="/docs/guides/self-host/" class="btn">Self-hosting guide</a>
-            <a href="/docs/" class="btn ghost">Read the docs</a>
+            <a href={u('/docs/guides/self-host/')} class="btn">Self-hosting guide</a>
+            <a href={u('/docs/')} class="btn ghost">Read the docs</a>
           </div>
         </div>
       </section>
@@ -237,7 +240,7 @@ const cases = [
 
     <footer class="wrap foot">
       <span>Lagrange is built by <a href="https://github.com/three-agent-problem">Three Agent Problem</a>.</span>
-      <span><a href="/docs/">Docs</a> · <a href={repo}>GitHub</a> · <a href="https://a2a-protocol.org">The A2A protocol</a></span>
+      <span><a href={u('/docs/')}>Docs</a> · <a href={repo}>GitHub</a> · <a href="https://a2a-protocol.org">The A2A protocol</a></span>
     </footer>
   </body>
 </html>
@@ -625,7 +628,7 @@ const cases = [
     .section {
       padding-top: 64px;
     }
-    .nav nav a[href='/docs/quickstart/'] {
+    .nav nav .wide-only {
       display: none;
     }
   }
