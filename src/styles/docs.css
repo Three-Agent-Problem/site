@@ -1,24 +1,37 @@
-/* Starlight in the Lagrange web app's colors and type. */
+/* Starlight in the Lagrange brand: Fog ground, ink text, crimson accent, Schibsted Grotesk + DM Mono. */
 :root {
-  --sl-font: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --sl-font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --sl-color-accent-low: #2c2a4a;
-  --sl-color-accent: #8b80ff;
-  --sl-color-accent-high: #d9d5ff;
-  --sl-color-black: #15141a;
-  --sl-color-gray-6: #1e1d25;
-  --sl-color-gray-5: #34323d;
+  --sl-font: 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --sl-font-mono: 'DM Mono', ui-monospace, monospace;
+  --sl-color-accent-low: #40191e;
+  --sl-color-accent: #f0455c;
+  --sl-color-accent-high: #ff9aa8;
+  --sl-color-white: #e8ebf0;
+  --sl-color-black: #0e1115;
+  --sl-color-gray-1: #d5dae2;
+  --sl-color-gray-2: #b1b8c3;
+  --sl-color-gray-3: #8b93a0;
+  --sl-color-gray-4: #5b616c;
+  --sl-color-gray-5: #28303a;
+  --sl-color-gray-6: #151920;
 }
 :root[data-theme='light'] {
-  --sl-color-accent-low: #ebe8ff;
-  --sl-color-accent: #5b4fe0;
-  --sl-color-accent-high: #2e2680;
-  --sl-color-white: #1d1b18;
-  --sl-color-gray-1: #2b2925;
-  --sl-color-gray-2: #45413b;
-  --sl-color-gray-3: #6f6a61;
-  --sl-color-gray-5: #e4dfd5;
-  --sl-color-gray-6: #f1eee7;
-  --sl-color-gray-7: #f7f5f0;
-  --sl-color-black: #fbfaf7;
+  --sl-color-accent-low: #fadee2;
+  --sl-color-accent: #e23248;
+  --sl-color-accent-high: #8e1426;
+  --sl-color-white: #121418;
+  --sl-color-gray-1: #1f232a;
+  --sl-color-gray-2: #3a404a;
+  --sl-color-gray-3: #5b616c;
+  --sl-color-gray-4: #8b93a0;
+  --sl-color-gray-5: #d3d7de;
+  --sl-color-gray-6: #e1e4e9;
+  --sl-color-gray-7: #eceef1;
+  --sl-color-black: #f8f9fa;
+}
+/* The site title next to the mark is the wordmark: lowercase, tight. */
+.site-title {
+  color: var(--sl-color-white);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
 }
