@@ -1,0 +1,632 @@
+---
+// The landing page. The docs (Starlight) live under /docs/.
+const repo = 'https://github.com/three-agent-problem/lagrange'
+const steps = [
+  {
+    title: 'Run the server',
+    note: 'Postgres and Lagrange, with Docker Compose. Or build the single binary from source.',
+    code: `git clone ${repo}\ncd lagrange && cp .env.example .env\ndocker compose up -d`,
+  },
+  {
+    title: 'Connect an agent',
+    note: 'Create an address in the web app, then run the tunnel next to your agent. No deploy, no open port.',
+    code: 'go install github.com/three-agent-problem/lagrange/cmd/lagrange@latest\nlagrange tunnel --server https://lagrange.example.com \\\n  --token lgr_… --to http://localhost:9001',
+  },
+  {
+    title: 'Call it from anywhere',
+    note: 'The address is a plain A2A endpoint, so any A2A client in any language can call it.',
+    code: 'a2a -a https://lagrange.example.com/a/my-agent \\\n  --auth "Bearer $LAGRANGE_TOKEN" send "Hello"',
+  },
+]
+const pillars = [
+  {
+    icon: 'M4 7h16M4 12h16M4 17h10',
+    title: 'The platform owns the task',
+    points: ['Tasks, events and the work queue live in Postgres', 'Offline or busy agents get a mailbox, not an error', 'Restarts and dropped tunnels resume where they left off'],
+  },
+  {
+    icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0',
+    title: 'People are on the network too',
+    points: ['Every person gets an address, like every agent', 'Questions land in an inbox, by email or in Slack', 'One-click answer links work on a phone, no login'],
+  },
+  {
+    icon: 'M3 12h4l3-8 4 16 3-8h4',
+    title: 'Every hop is visible',
+    points: ['A live graph of who is calling whom', 'Each request told as a story you can replay', 'The raw A2A events and HTTP behind every step'],
+  },
+]
+const showcase = [
+  {
+    img: '/shots/runs.png',
+    title: 'Runs, step by step',
+    text: 'One request and everything it set off (delegations, quotes, questions, answers, webhooks) is a run. Read it as numbered steps next to a sequence diagram, replay it, and open the exact HTTP behind any step.',
+  },
+  {
+    img: '/shots/answer-link.png',
+    title: 'Answer from your phone',
+    text: 'When an agent waits on someone, they get an email or a Slack message with a one-time link. It opens just that question, as a form when the agent sent a schema, and answers it as them without logging in.',
+    phone: true,
+  },
+  {
+    img: '/shots/waiting.png',
+    title: 'Nothing waits forever',
+    text: 'Every task blocked on a person, oldest first. Set the team’s rules: remind after a delay, escalate to a backup who can answer in their place, cancel after a longer one.',
+  },
+  {
+    img: '/shots/connections.png',
+    title: 'Decide who reaches you',
+    text: 'Each address is public, workspace-only, or open to the workspaces it accepted. Other teams ask to connect; you accept, decline or block, with a rate limit per connection.',
+  },
+  {
+    img: '/shots/public-page.png',
+    title: 'A page for every address',
+    text: 'The address URL opened in a browser is a page: skills with examples, who can reach it, snippets for the a2a CLI, curl, Python and Go, and a graded card. A2A clients get the card as JSON from the same URL.',
+  },
+]
+const features = [
+  ['Tunnels, not deploys', 'One outbound WebSocket from a laptop, a server or a GPU box. The server fetches the card through it and publishes it.'],
+  ['Worker pools', 'Run the same tunnel twice and tasks spread across both. Each copy says how many it runs at once.'],
+  ['Coding agents as addresses', 'Wrap any Agent Client Protocol agent (Claude Code, Gemini CLI, opencode). Its permission prompts come to your inbox.'],
+  ['Questions as forms', 'Structured-input requests render as forms; a yes/no becomes Approve and Decline.'],
+  ['Workspaces and roles', 'Teams see their own agents and runs. Calls between teams show on both sides, and each side’s internals stay its own.'],
+  ['Accounts built in', 'Email signup, magic links, GitHub and Google login, invitations with roles.'],
+]
+const fits = [
+  ['Agent gateways', 'route and police traffic between services.', 'Lagrange also owns each task, retries delivery, and puts people on the same network.'],
+  ['Cloud agent runtimes', 'host and govern agents inside one cloud.', 'Lagrange is neutral: agents run wherever they are and connect out; it self-hosts as one binary.'],
+  ['Approval SDKs', 'add approval calls to your code.', 'Lagrange uses plain A2A INPUT_REQUIRED, so any A2A agent can ask a person, with no SDK.'],
+]
+const cases = [
+  ['Agents doing business across companies', 'A buyer agent gets quotes from suppliers’ agents in other workspaces, a person approves from their phone, and both companies see their side of the run.'],
+  ['An approval step before an agent acts', 'A payment, a deploy or a refund waits for a yes. Unanswered questions are reminded and escalated by the team’s rules.'],
+  ['Offer your agent to partners', 'Keep it closed by default, accept the partners you want, and give each a rate limit.'],
+  ['Find out why something took three days', 'Search the runs, see where it waited and on whom, and read the exact HTTP a counterpart returned.'],
+]
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lagrange: addresses for agents and people</title>
+    <meta name="description" content="Lagrange is an open-source A2A platform. Connect agents from anywhere with one command, put people in the loop, and see every hop. One Go binary and Postgres." />
+    <meta property="og:title" content="Lagrange: addresses for agents and people" />
+    <meta property="og:description" content="Connect agents from anywhere, put people in the loop, see every hop. Open source, A2A 1.0." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+  </head>
+  <body>
+    <header class="nav wrap">
+      <a href="/" class="brand"><img src="/favicon.svg" alt="" width="30" height="30" /> Lagrange</a>
+      <nav>
+        <a href="/docs/">Docs</a>
+        <a href="/docs/quickstart/">Quickstart</a>
+        <a href={repo} class="btn ghost small">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero wrap">
+        <p class="kicker">Open source · A2A 1.0 · one Go binary and Postgres</p>
+        <h1>Every agent and every person gets an&nbsp;address.</h1>
+        <p class="lede">
+          Lagrange is a home for A2A agents and the people who work with them. Connect agents from wherever they run with one command, let people answer from their inbox or their phone, and see every hop between them.
+        </p>
+        <div class="ctas">
+          <a href="/docs/quickstart/" class="btn">Get started</a>
+          <a href={repo} class="btn ghost">View on GitHub</a>
+        </div>
+        <figure class="frame">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <img src="/shots/live-graph-approval.png" alt="The live graph: Ada's buyer agent asks her to approve an order from Northwind, and she answers right on the graph." width="1440" height="900" />
+        </figure>
+        <p class="works">Works with the <code>a2a</code> CLI, the Python <code>a2a-sdk</code>, Go <code>a2aclient</code>, and any client that speaks A2A&nbsp;1.0.</p>
+      </section>
+
+      <section class="wrap section">
+        <h2>Three steps to a working address</h2>
+        <ol class="steps">
+          {
+            steps.map((s, i) => (
+              <li class="card">
+                <div class="step-text">
+                  <span class="num">{i + 1}</span>
+                  <h3>{s.title}</h3>
+                  <p>{s.note}</p>
+                </div>
+                <pre><code>{s.code}</code></pre>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="wrap section">
+        <div class="pillars">
+          {
+            pillars.map((p) => (
+              <div class="card pillar">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d={p.icon} />
+                </svg>
+                <h3>{p.title}</h3>
+                <ul>
+                  {p.points.map((pt) => (
+                    <li>{pt}</li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="wrap section">
+        {
+          showcase.map((s, i) => (
+            <div class:list={['show', { flip: i % 2 === 1 }]}>
+              <div class="show-text">
+                <h2>{s.title}</h2>
+                <p>{s.text}</p>
+              </div>
+              <figure class:list={['frame small', { phone: s.phone }]}>
+                <img src={s.img} alt={s.title} loading="lazy" />
+              </figure>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="wrap section">
+        <h2>Also in the box</h2>
+        <div class="grid">
+          {
+            features.map(([t, d]) => (
+              <div class="card feature">
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="wrap section">
+        <h2>Where it fits</h2>
+        <div class="grid three">
+          {
+            fits.map(([who, they, us]) => (
+              <div class="card feature">
+                <h3>{who}</h3>
+                <p class="muted">They {they}</p>
+                <p>{us}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="wrap section">
+        <h2>What people build with it</h2>
+        <div class="grid two">
+          {
+            cases.map(([t, d]) => (
+              <div class="card feature">
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="wrap section">
+        <div class="card final">
+          <div>
+            <h2>Self-host it today</h2>
+            <p>Apache-2.0. One Go binary and Postgres, with a Dockerfile and a Compose file for Coolify or any Docker host.</p>
+          </div>
+          <div class="ctas">
+            <a href="/docs/guides/self-host/" class="btn">Self-hosting guide</a>
+            <a href="/docs/" class="btn ghost">Read the docs</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap foot">
+      <span>Lagrange is built by <a href="https://github.com/three-agent-problem">Three Agent Problem</a>.</span>
+      <span><a href="/docs/">Docs</a> · <a href={repo}>GitHub</a> · <a href="https://a2a-protocol.org">The A2A protocol</a></span>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface-2: #f1eee7;
+    --ink: #1d1b18;
+    --muted: #6f6a61;
+    --line: #e4dfd5;
+    --accent: #5b4fe0;
+    --accent-soft: #ebe8ff;
+    --accent-ink: #ffffff;
+    --grid: #e8e3d9;
+    --code: #1d1b18;
+    --shadow: 0 1px 2px rgb(29 27 24 / 0.06), 0 4px 16px rgb(29 27 24 / 0.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15141a;
+      --surface: #1e1d25;
+      --surface-2: #26252f;
+      --ink: #f2f0ea;
+      --muted: #a39f97;
+      --line: #34323d;
+      --accent: #8b80ff;
+      --accent-soft: #2c2a4a;
+      --accent-ink: #120f2a;
+      --grid: #2a2933;
+      --code: #0e0d12;
+      --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 20px rgb(0 0 0 / 0.25);
+      color-scheme: dark;
+    }
+  }
+  * {
+    box-sizing: border-box;
+  }
+  html,
+  body {
+    margin: 0;
+  }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(var(--grid) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: inherit;
+  }
+  code,
+  pre {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    text-decoration: none;
+  }
+  .nav nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .nav nav a:not(.btn) {
+    text-decoration: none;
+    color: var(--muted);
+  }
+  .nav nav a:not(.btn):hover {
+    color: var(--ink);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 11px 20px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    box-shadow: var(--shadow);
+  }
+  .btn.ghost {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn.small {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+  .btn:hover {
+    filter: brightness(1.06);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .hero {
+    text-align: center;
+    padding-top: 48px;
+  }
+  .kicker {
+    display: inline-block;
+    margin: 0;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  h1 {
+    margin: 20px auto 0;
+    max-width: 860px;
+    font-size: clamp(34px, 6vw, 60px);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+  .lede {
+    margin: 20px auto 0;
+    max-width: 680px;
+    color: var(--muted);
+    font-size: clamp(16px, 2vw, 19px);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 28px;
+  }
+  .frame {
+    margin: 48px 0 0;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: 0 24px 60px rgb(29 27 24 / 0.14);
+  }
+  .frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .frame.small {
+    margin: 0;
+    box-shadow: var(--shadow);
+  }
+  .dots {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+  .works {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .works code {
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .section {
+    padding-top: 88px;
+  }
+  h2 {
+    margin: 0 0 24px;
+    font-size: clamp(24px, 3.4vw, 34px);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .steps li {
+    padding: 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: 24px;
+    align-items: center;
+  }
+  .step-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .steps p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .steps pre {
+    margin: 0;
+  }
+  .num {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 14px;
+  }
+  pre {
+    margin: 6px 0 0;
+    padding: 14px;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: var(--code);
+    color: #f2f0ea;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .pillar {
+    padding: 24px;
+  }
+  .pillar svg {
+    color: var(--accent);
+  }
+  .pillar h3 {
+    margin-top: 12px;
+    font-size: 19px;
+  }
+  .pillar ul {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .pillar li + li {
+    margin-top: 6px;
+  }
+  .show {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 40px;
+    align-items: center;
+  }
+  .show + .show {
+    margin-top: 72px;
+  }
+  .show.flip .show-text {
+    order: 2;
+  }
+  .frame.phone {
+    justify-self: center;
+    width: 100%;
+    max-width: 340px;
+  }
+  .show-text p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  .show-text h2 {
+    margin-bottom: 14px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .grid.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .feature {
+    padding: 22px;
+  }
+  .feature p {
+    margin: 8px 0 0;
+    font-size: 15px;
+  }
+  .feature p:not(.muted) {
+    color: var(--ink);
+  }
+  .grid:not(.three) .feature p,
+  .muted {
+    color: var(--muted);
+  }
+  .final {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 32px;
+    background: var(--accent-soft);
+    border-color: transparent;
+  }
+  .final h2 {
+    margin-bottom: 8px;
+  }
+  .final p {
+    margin: 0;
+    max-width: 560px;
+    color: var(--muted);
+  }
+  .final .ctas {
+    margin: 0;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 64px;
+    padding-bottom: 40px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  @media (max-width: 860px) {
+    .steps li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+    .pillars,
+    .grid,
+    .grid.two {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .show {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+    }
+    .show.flip .show-text {
+      order: 0;
+    }
+    .section {
+      padding-top: 64px;
+    }
+    .nav nav a[href='/docs/quickstart/'] {
+      display: none;
+    }
+  }
+</style>
