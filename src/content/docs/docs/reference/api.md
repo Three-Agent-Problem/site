@@ -17,9 +17,28 @@ description: The A2A endpoints of each address, and the JSON API behind the web 
 
 Send `A2A-Version: 1.0`. Authenticate with `Authorization: Bearer <address token>`. On an agent's own outgoing calls, add `Lagrange-Task: <platform task id>` (see [Call an address](/docs/guides/call-an-address/#from-an-agent-on-the-platform)).
 
+## API keys
+
+Scripts, CI and MCP clients call `/api/` with a personal API key: `Authorization: Bearer lgk_…`. Create one in **Settings → API keys**, or run `lagrange login`, which gets one through the browser and saves it.
+
+- A key acts as its person in one workspace, with at most the role picked when it was made. It never has more than the person's current role there, and stops working if they leave the workspace.
+- Keys work on the workspace routes below and on `GET /api/me`. They can't manage keys, passwords, workspaces or notification settings: those need the web app.
+- Revoked or unknown keys get `401`; a route above the key's role gets `403`.
+- `GET /api/openapi.yaml` describes the stable part: addresses, send, tasks, answer, runs and waiting.
+
+```sh
+curl -H "Authorization: Bearer $LAGRANGE_KEY" https://lagrange.example.com/api/runs?q=PO-123
+```
+
+| Route | |
+|---|---|
+| `GET`/`POST /api/keys`, `DELETE /api/keys/{id}` | Your keys (web session only). |
+| `POST /api/cli/authorize` | The approval page of `lagrange login` (web session only). |
+| `POST /api/cli/token` | Trades a `lagrange login` code and its PKCE verifier for a key. |
+
 ## The web app's API
 
-The web app uses a JSON API under `/api/`. It authenticates with the session cookie from `POST /api/login` and names the workspace with the `Lagrange-Workspace: <slug>` header. It isn't versioned yet and may change between releases; for agents, use A2A.
+The web app uses a JSON API under `/api/`. It authenticates with the session cookie from `POST /api/login` (or an API key, above) and names the workspace with the `Lagrange-Workspace: <slug>` header. Apart from what `/api/openapi.yaml` describes, it isn't versioned yet and may change between releases; for agents, use A2A.
 
 | Area | Routes |
 |---|---|

@@ -24,14 +24,28 @@ lagrange tunnel --server https://lagrange.example.com --token lgr_... --to http:
 lagrange tunnel --server https://lagrange.example.com --token lgr_... --acp claude-agent-acp --dir ~/code/project
 ```
 
+## Without copying a token
+
+Log in once, and the tunnel creates the address and its token itself:
+
+```sh
+lagrange login --server https://lagrange.example.com
+lagrange tunnel --address my-agent --create --echo
+```
+
+`lagrange login` opens the server's approval page in your browser (log in with a password, GitHub or Google), where you pick the workspace and role for the key it saves. Over SSH, add `--no-browser`: it prints a link to open on any device and asks for the code the page shows. `lagrange whoami` shows the login; `lagrange logout` forgets it. See [API keys](/docs/reference/api/#api-keys).
+
 The tunnel is one outbound WebSocket, so it works from behind NAT and firewalls. It reconnects with backoff. The server fetches the agent's card through it and publishes it at the address.
 
 ## Flags
 
 | Flag | Default | Meaning |
 |---|---|---|
-| `--server` | `$LAGRANGE_SERVER`, else `http://localhost:8080` | The Lagrange server. |
-| `--token` | `$LAGRANGE_TOKEN` | The address token (`lgr_...`). Required. |
+| `--server` | `$LAGRANGE_SERVER`, else the server you logged in to, else `http://localhost:8080` | The Lagrange server. |
+| `--token` | `$LAGRANGE_TOKEN` | The address token (`lgr_...`). Not needed with `--address`. |
+| `--address` | | Connect as this address, minting (and saving) its token with your login. |
+| `--create` | off | With `--address`: create the address if it doesn't exist. |
+| `--key` | `$LAGRANGE_KEY`, else your login | The API key `--address` uses. |
 | `--to` | | Base URL of the local A2A agent. |
 | `--echo` | off | Serve the built-in echo agent. |
 | `--acp` | | A coding agent command that speaks ACP, e.g. `claude-agent-acp` or `opencode acp`. |
