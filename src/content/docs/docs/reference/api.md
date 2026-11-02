@@ -52,6 +52,7 @@ The web app uses a JSON API under `/api/`. It authenticates with the session coo
 | Live events | `GET /api/events` (server-sent events; `?workspace=<slug>`) |
 | Waiting | `GET /api/waiting`; `POST /api/waiting/{id}/remind`; `GET`/`PUT /api/settings/wait-policy` |
 | Notifications | `GET`/`PUT /api/settings/notifications`; `POST /api/settings/notifications/test` |
+| Webhooks (admin) | `GET`/`POST /api/webhooks`; `PUT`/`DELETE /api/webhooks/{id}`; `GET /api/webhooks/{id}/deliveries`; `POST /api/webhooks/{id}/test`; `POST /api/webhooks/{id}/deliveries/{delivery}/retry`. See [Webhooks](/docs/guides/webhooks/). |
 | Answer links | `GET`/`POST /api/decisions/{token}`: the one-time links in emails and Slack messages |
 
 ## Metadata keys
