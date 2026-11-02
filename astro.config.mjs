@@ -44,7 +44,7 @@ export default defineConfig({
           label: 'Concepts',
           items: ['docs/concepts/addresses', 'docs/concepts/tasks-and-runs', 'docs/concepts/people', 'docs/concepts/workspaces'],
         },
-        { label: 'Guides', items: ['docs/guides/connect-an-agent', 'docs/guides/call-an-address', 'docs/guides/approvals', 'docs/guides/self-host'] },
+        { label: 'Guides', items: ['docs/guides/connect-an-agent', 'docs/guides/call-an-address', 'docs/guides/mcp', 'docs/guides/approvals', 'docs/guides/self-host'] },
         { label: 'Reference', items: ['docs/reference/api', 'docs/reference/configuration'] },
       ],
     }),
