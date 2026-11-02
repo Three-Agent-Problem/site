@@ -1,0 +1,133 @@
+---
+// Chapters come from lagrange-film's out-chapters.txt (the film's render writes it).
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const chapters = [
+  {
+    "t": 0,
+    "label": "0:00",
+    "name": "The third body"
+  },
+  {
+    "t": 41,
+    "label": "0:41",
+    "name": "What Lagrange is"
+  },
+  {
+    "t": 107,
+    "label": "1:47",
+    "name": "Run the server"
+  },
+  {
+    "t": 170,
+    "label": "2:50",
+    "name": "Your first agent"
+  },
+  {
+    "t": 246,
+    "label": "4:06",
+    "name": "Addresses are A2A"
+  },
+  {
+    "t": 329,
+    "label": "5:29",
+    "name": "Tunnel modes"
+  },
+  {
+    "t": 424,
+    "label": "7:04",
+    "name": "Mailboxes and workers"
+  },
+  {
+    "t": 467,
+    "label": "7:47",
+    "name": "Agents calling agents"
+  },
+  {
+    "t": 520,
+    "label": "8:40",
+    "name": "A real flow"
+  },
+  {
+    "t": 578,
+    "label": "9:38",
+    "name": "People in the loop"
+  },
+  {
+    "t": 636,
+    "label": "10:36",
+    "name": "Nothing waits forever"
+  },
+  {
+    "t": 683,
+    "label": "11:23",
+    "name": "Runs"
+  },
+  {
+    "t": 740,
+    "label": "12:20",
+    "name": "Failures and time"
+  },
+  {
+    "t": 785,
+    "label": "13:05",
+    "name": "The live view"
+  },
+  {
+    "t": 835,
+    "label": "13:55",
+    "name": "CLI, API keys and CI"
+  },
+  {
+    "t": 917,
+    "label": "15:17",
+    "name": "Claude Code and MCP"
+  },
+  {
+    "t": 962,
+    "label": "16:02",
+    "name": "Webhooks"
+  },
+  {
+    "t": 1018,
+    "label": "16:58",
+    "name": "Under the hood"
+  },
+  {
+    "t": 1062,
+    "label": "17:42",
+    "name": "Teams"
+  },
+  {
+    "t": 1104,
+    "label": "18:24",
+    "name": "Who can reach an address"
+  },
+  {
+    "t": 1151,
+    "label": "19:11",
+    "name": "Dev mode and toolkit"
+  },
+  {
+    "t": 1212,
+    "label": "20:12",
+    "name": "Lagrange"
+  }
+]
+---
+<video id="tour" controls preload="metadata" playsinline poster={base + '/video/lagrange-tour.jpg'} src={base + '/video/lagrange-tour.mp4'}></video>
+<ol class="tour-chapters">
+  {chapters.map((c) => <li><button type="button" data-t={c.t}><code>{c.label}</code> {c.name}</button></li>)}
+</ol>
+<script>
+  const v = document.getElementById('tour') as HTMLVideoElement
+  document.querySelectorAll<HTMLButtonElement>('.tour-chapters button').forEach((b) => {
+    b.addEventListener('click', () => { v.currentTime = Number(b.dataset.t); v.play() })
+  })
+</script>
+<style>
+  video { width: 100%; border-radius: 12px; background: #121418; }
+  .tour-chapters { columns: 2; list-style: none; padding: 0; margin-top: 1rem; }
+  .tour-chapters button { all: unset; cursor: pointer; padding: 0.2rem 0; }
+  .tour-chapters button:hover { text-decoration: underline; }
+  @media (max-width: 600px) { .tour-chapters { columns: 1; } }
+</style>

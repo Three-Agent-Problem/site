@@ -39,7 +39,7 @@ export default defineConfig({
         { tag: 'link', attrs: { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap' } },
       ],
       sidebar: [
-        { label: 'Start here', items: ['docs', 'docs/quickstart'] },
+        { label: 'Start here', items: ['docs', 'docs/quickstart', 'docs/tour'] },
         {
           label: 'Concepts',
           items: ['docs/concepts/addresses', 'docs/concepts/tasks-and-runs', 'docs/concepts/people', 'docs/concepts/workspaces'],
