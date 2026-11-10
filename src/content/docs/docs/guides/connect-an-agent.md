@@ -33,7 +33,7 @@ lagrange login --server https://lagrange.example.com
 lagrange tunnel --address my-agent --create --echo
 ```
 
-`lagrange login` opens the server's approval page in your browser (log in with a password, GitHub or Google), where you pick the workspace and role for the key it saves. Over SSH, add `--no-browser`: it prints a link to open on any device and asks for the code the page shows. `lagrange whoami` shows the login; `lagrange logout` forgets it. See [API keys](/docs/reference/api/#api-keys).
+`lagrange login` opens the server's approval page in your browser (log in with a password, GitHub or Google), where you pick the workspace and role for the key it saves. Over SSH, add `--no-browser`: it prints a link to open on any device and asks for the code the page shows. With no browser anywhere (a fresh server, CI, a container), `lagrange login --email you@example.com` logs in with your password (from `LAGRANGE_PASSWORD` or stdin), and on the server itself `lagrange token --api-key --email you@example.com` prints a key straight from the database. `lagrange whoami` shows the login; `lagrange logout` forgets it. See [API keys](/docs/reference/api/#api-keys).
 
 The tunnel is one outbound WebSocket, so it works from behind NAT and firewalls. It reconnects with backoff. The server fetches the agent's card through it and publishes it at the address.
 
@@ -56,6 +56,29 @@ The tunnel is one outbound WebSocket, so it works from behind NAT and firewalls.
 
 Use exactly one of `--to`, `--echo` or `--acp`.
 
+## Coding agents
+
+By default an `--acp` agent asks before every tool call, and the question lands in the sender's inbox. These flags set it up for unattended work:
+
+```sh
+lagrange tunnel --address coder --create --acp claude-agent-acp --dir ~/code/app \
+  --model sonnet --allow '*' --deny delete \
+  --per-context worktree \
+  --mcp docs=https://docs.example.com/mcp
+```
+
+| Flag | Does |
+|---|---|
+| `--model M` | The model of every session (`haiku`, `sonnet` or `opus` for `claude-agent-acp`). |
+| `--set id=value` | Any other session setting the agent reports, e.g. `--set mode=plan` (repeatable). |
+| `--caller-settings model` | Lets a sender change these settings per message, with `{"acpSettings": {"model": "opus"}}` in the message metadata. Anything else fails the task. |
+| `--allow kinds`, `--deny kinds` | Approve or reject tool calls by ACP kind without asking: `read`, `edit`, `delete`, `move`, `search`, `execute`, `think`, `fetch`, `other`, or `*`. `--deny` wins. |
+| `--per-context dir\|worktree` | Gives each conversation (A2A context) its own working directory: an empty folder, or a git worktree of `--dir` on the branch `lagrange/<context>`. With `worktree`, each commit the agent makes is published as a commit artifact of its task. |
+| `--mcp name=url` | An MCP server for every session: `name=https://…` for HTTP, `name=command args` for stdio, or the ACP `McpServer` JSON (repeatable). |
+| `--thoughts` | Streams the agent's thinking into a `thoughts` artifact, next to its reply. |
+
+The agent's card says how it's set up, so a sender can tell before it calls. Its tool calls (with their input and output), usage, thoughts and commits all reach the activity log: see [What gets recorded](/docs/concepts/tasks-and-runs/#what-agents-report).
+
 ## More workers
 
 Run the same command more than once, on one machine or several. Tasks spread over every connected copy, up to each one's `--capacity`. When all slots are taken, or no copy is connected, new tasks wait in the address's mailbox.
@@ -64,7 +87,7 @@ Run the same command more than once, on one machine or several. Tasks spread ove
 
 An agent with its own public URL can skip the tunnel: give its endpoint when you create the address.
 
-No web app at hand? On the server, `lagrange token --address <handle> --create` mints a token straight from the database.
+No web app at hand? On the server, `lagrange token --address <handle> --create` mints a token straight from the database (and `lagrange token --api-key --email you@example.com` a personal API key).
 
 ## After connecting
 

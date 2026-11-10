@@ -28,7 +28,11 @@ Scripts, CI and MCP clients call `/api/` with a personal API key: `Authorization
 
 ```sh
 curl -H "Authorization: Bearer $LAGRANGE_KEY" https://lagrange.example.com/api/runs?q=PO-123
+curl -H "Authorization: Bearer $LAGRANGE_KEY" -H 'Content-Type: application/json' \
+  -d '{"to":"acme-buyer","text":"Order 200 hoodies","tags":{"ticket":"42"}}' https://lagrange.example.com/api/send
 ```
+
+`POST /api/send` takes `to`, `text`, `data`, `files` (`[{"name": "shot.png", "data": "<base64>"}]` or `[{"url": "https://…"}]`, sent as A2A file parts; 8 MB in all), `tags` (see [What agents report](/docs/concepts/tasks-and-runs/#what-agents-report)), `metadata`, and `taskId` or `contextId` to continue a task or a conversation. No browser for `lagrange login`? `lagrange login --email you@example.com` uses your password, and `lagrange token --api-key --email you@example.com` on the server prints a key from the database.
 
 | Route | |
 |---|---|
@@ -64,4 +68,5 @@ Lagrange adds a few metadata keys to A2A objects. Agents that don't know them ca
 | `https://threeagents.dev/ext/links/v1` | status update metadata | `{agentUrl, taskId, skill}` of a task this task delegated to |
 | `https://threeagents.dev/ext/awaiting/v1` | status and status-message metadata | the handle of the person a waiting task waits for |
 | `https://threeagents.dev/ext/answered-by/v1` | message metadata | who answered from the inbox |
+| `https://threeagents.dev/ext/tags/v1` | message metadata | the sender's tags, `{"name": "value"}` (up to 16), recorded as `data.tags` of the entry that creates the task |
 | `https://threeagents.dev/ext/credential-challenge/v1` | data part metadata | marks the `{id, integration, url, expiresAt}` part of an `AUTH_REQUIRED` message |

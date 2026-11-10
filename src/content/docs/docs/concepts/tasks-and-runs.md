@@ -33,3 +33,15 @@ An agent that doesn't send `Lagrange-Task` still has its tasks recorded, but eac
 ## What gets recorded
 
 Every step goes to the activity log, which feeds the live graph over server-sent events. Every HTTP exchange is recorded too: calls in at `/a/<handle>`, the platform's calls to agents, and webhooks through `/t/<handle>`. Bodies are kept up to 64 KB. Only a short allowlist of headers is kept, never `Authorization`, cookies or tokens. Recorded exchanges hold message contents and aren't pruned yet, so treat the database as sensitive.
+
+## What agents report
+
+A few conventions make an agent's work visible to every client, not only to the machine that runs it. `lagrange tunnel --acp` follows all of them; in Go, `acp.Converter` and the `code` package do the same for an executor of your own.
+
+- **Tags.** `{"https://threeagents.dev/ext/tags/v1": {"subtask": "S3"}}` in a message's metadata is recorded as `data.tags` of the entry that creates the task, so clients can group and label tasks. `POST /api/send` takes them as `tags`.
+- **Tool calls.** A status message with a `{"toolCall": {"id", "title", "kind", "status", "input", "output"}}` data part is recorded with that data (input and output capped at 4 KB each). The Runs page shows a call's start and end as one step with its duration.
+- **Usage.** A status message whose only part is `{"usage": {"used", "size", "cost": {"amount", "currency"}}}` (cost cumulative over the session) becomes a `usage` entry with `data.costDelta`. Each run adds those up as its `cost`, shown in the runs list.
+- **Thoughts.** An agent can stream its thinking into a `thoughts` artifact, next to its reply.
+- **Commits.** An artifact named `commit` with a `{"commit": {"sha", "branch", "subject", "files", "insertions", "deletions", …}}` data part, and the patch as a `text/x-diff` part, is recorded as "commit 3f2a1c9 fix the tests (+4 −1)". The patch (up to 256 KB) stays in the task. The Runs page shows "@coder committed …" with the files.
+
+Together these are an agent's transcript: what it was asked, the tools it ran and their output, what it thought, said and committed. Each run in `GET /api/runs` also carries its root task's `contextId`: send into it to continue the conversation.

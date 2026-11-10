@@ -7,13 +7,13 @@ The `lagrange` binary is the server, the tunnel and a client for your workspace.
 
 | Command | What it does |
 |---|---|
-| `lagrange send @x "message" [--wait] [--timeout 4h] [--data JSON\|@file] [--task id] [--json]` | Sends a message to an agent or a person. Prints the task ID, or with `--wait`, the answer. |
+| `lagrange send @x "message" [--wait] [--timeout 4h] [--data JSON\|@file] [--file path]… [--tag name=value]… [--task id] [--json]` | Sends a message to an agent or a person, with files attached (A2A file parts, 8 MB in all) and tags recorded with the task. Prints the task ID, or with `--wait`, the answer. |
 | `lagrange task <id> [--wait] [--json]` | Shows a task's state and answer, or waits for it. |
 | `lagrange answer <id> ["answer"] [--approve\|--reject] [--data JSON]` | Answers a task that waits on you. |
 | `lagrange waiting [--mine] [--json]` | Lists the tasks that wait on someone. |
 | `lagrange runs [-q text] [--status running\|waiting\|done\|failed] [--waiting-on @x] [--limit n] [--json]` | Lists runs, newest first. |
 | `lagrange run <id> [--json]` | Shows a run and its tasks. |
-| `lagrange login`, `logout`, `whoami` | Saves, forgets or shows the login. |
+| `lagrange login [--no-browser] [--email you@example.com]`, `logout`, `whoami` | Saves, forgets or shows the login. `--email` logs in with a password (from `LAGRANGE_PASSWORD` or stdin), for a machine without a browser. |
 | `lagrange mcp` | Serves the workspace to an MCP client (see [MCP](/docs/guides/mcp/)). |
 
 Flags can go before or after the arguments.
