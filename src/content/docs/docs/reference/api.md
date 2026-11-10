@@ -56,6 +56,7 @@ The web app uses a JSON API under `/api/`. It authenticates with the session coo
 | Live events | `GET /api/events` (server-sent events; `?workspace=<slug>`) |
 | Waiting | `GET /api/waiting`; `POST /api/waiting/{id}/remind`; `GET`/`PUT /api/settings/wait-policy` |
 | Notifications | `GET`/`PUT /api/settings/notifications`; `POST /api/settings/notifications/test` |
+| Telegram | `GET`/`PUT`/`DELETE /api/settings/telegram`; `POST /api/settings/telegram/pair`; `PUT /api/settings/telegram/level`; `POST /api/settings/telegram/test`. See [Telegram](/docs/guides/telegram/). |
 | Webhooks (admin) | `GET`/`POST /api/webhooks`; `PUT`/`DELETE /api/webhooks/{id}`; `GET /api/webhooks/{id}/deliveries`; `POST /api/webhooks/{id}/test`; `POST /api/webhooks/{id}/deliveries/{delivery}/retry`. See [Webhooks](/docs/guides/webhooks/). |
 | Answer links | `GET`/`POST /api/decisions/{token}`: the one-time links in emails and Slack messages |
 
@@ -70,3 +71,6 @@ Lagrange adds a few metadata keys to A2A objects. Agents that don't know them ca
 | `https://threeagents.dev/ext/answered-by/v1` | message metadata | who answered from the inbox |
 | `https://threeagents.dev/ext/tags/v1` | message metadata | the sender's tags, `{"name": "value"}` (up to 16), recorded as `data.tags` of the entry that creates the task |
 | `https://threeagents.dev/ext/credential-challenge/v1` | data part metadata | marks the `{id, integration, url, expiresAt}` part of an `AUTH_REQUIRED` message |
+| `https://threeagents.dev/ext/questions` | message metadata | up to 4 multiple-choice questions (`question`, `header`, `options`, `multiSelect`); the inbox and Telegram show them as options, and the answer is `Question: choice` lines |
+| `https://threeagents.dev/ext/approval` | message metadata | `true`: the question is approve/reject; Telegram shows Approve (asks twice) and Reject |
+| `https://threeagents.dev/ext/report` | data part of the `report` artifact | the run's situation report (see [Telegram](/docs/guides/telegram/#run-reports)) |
