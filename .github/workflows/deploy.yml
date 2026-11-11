@@ -1,5 +1,5 @@
 # Builds the site and publishes dist/ to the gh-pages branch, which GitHub Pages serves
-# at https://three-agent-problem.github.io/site/.
+# at https://docs.3agents.dev/.
 name: Deploy to GitHub Pages
 
 on:

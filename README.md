@@ -4,16 +4,16 @@ The landing page and docs for [Lagrange](https://github.com/three-agent-problem/
 
 ```sh
 npm ci
-npm run dev      # http://localhost:4321/site/
+npm run dev      # http://localhost:4321/
 npm run build    # static site in dist/
 npm run preview  # serve dist/
 ```
 
 ## Deploy
 
-Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It builds the site and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves at **https://three-agent-problem.github.io/site/**.
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It builds the site and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves at **https://docs.3agents.dev/** (custom domain; `public/CNAME` keeps it across deploys, DNS is a CNAME for `docs` to `three-agent-problem.github.io`).
 
-The site is built for the `/site` base path. Links on the landing page go through `u()`, and a small rehype plugin in `astro.config.mjs` prefixes root-relative links in the docs. Write links as `/docs/...` in both places. For a custom domain, set `SITE_URL` and `BASE_PATH=/` (in the workflow, or as the defaults in `astro.config.mjs`), and add the domain in the repo's Pages settings.
+The site is built for the root base path (`BASE_PATH=/`). Links on the landing page go through `u()`, and a small rehype plugin in `astro.config.mjs` prefixes root-relative links in the docs. Write links as `/docs/...` in both places. To serve it under the old project URL instead, set `SITE_URL=https://three-agent-problem.github.io` and `BASE_PATH=/site`.
 
 Node 22.12 or newer. Astro is pinned to 6.4.8 and Starlight to 0.40.0. Astro 7 needs Node 22.23+.
 

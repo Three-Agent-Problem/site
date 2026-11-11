@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 
 // The landing page is src/pages/index.astro; the docs live under /docs/ (src/content/docs/docs).
-// It's served from GitHub Pages at <SITE_URL><BASE_PATH>; with a custom domain, set BASE_PATH=/.
-const site = process.env.SITE_URL ?? 'https://three-agent-problem.github.io'
-const base = process.env.BASE_PATH ?? '/site'
+// It's served from GitHub Pages at <SITE_URL><BASE_PATH>, on the custom domain docs.3agents.dev (public/CNAME). For the old project URL, set SITE_URL=https://three-agent-problem.github.io BASE_PATH=/site.
+const site = process.env.SITE_URL ?? 'https://docs.3agents.dev'
+const base = process.env.BASE_PATH ?? '/'
 
 // withBase prefixes root-relative links in the docs (/docs/quickstart/) with the base path,
 // in Markdown links and in MDX components' href props.
