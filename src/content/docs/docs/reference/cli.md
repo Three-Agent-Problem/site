@@ -12,7 +12,7 @@ The `lagrange` binary is the server, the tunnel and a client for your workspace.
 | `lagrange answer <id> ["answer"] [--approve\|--reject] [--data JSON]` | Answers a task that waits on you. |
 | `lagrange waiting [--mine] [--json]` | Lists the tasks that wait on someone. |
 | `lagrange runs [-q text] [--status running\|waiting\|done\|failed] [--waiting-on @x] [--limit n] [--json]` | Lists runs, newest first. |
-| `lagrange run <id> [--json]` | Shows a run and its tasks. |
+| `lagrange run <id> [--overlap] [--json]` | Shows a run and its tasks. `--overlap` shows each agent's tool calls and cost, and the tool calls the agents repeated (same kind and input). |
 | `lagrange login [--no-browser] [--email you@example.com]`, `logout`, `whoami` | Saves, forgets or shows the login. `--email` logs in with a password (from `LAGRANGE_PASSWORD` or stdin), for a machine without a browser. |
 | `lagrange mcp` | Serves the workspace to an MCP client (see [MCP](/docs/guides/mcp/)). |
 
