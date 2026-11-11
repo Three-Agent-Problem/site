@@ -11,7 +11,7 @@ npm run preview  # serve dist/
 
 ## Deploy
 
-Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It builds the site and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves at **https://docs.3agents.dev/** (custom domain; `public/CNAME` keeps it across deploys, DNS is a CNAME for `docs` to `three-agent-problem.github.io`).
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It builds the site and publishes `dist/` to the `gh-pages` branch, which GitHub Pages serves at **https://lagrange.3agents.dev/** (custom domain; `public/CNAME` keeps it across deploys, DNS is a CNAME for `lagrange` to `three-agent-problem.github.io`).
 
 The site is built for the root base path (`BASE_PATH=/`). Links on the landing page go through `u()`, and a small rehype plugin in `astro.config.mjs` prefixes root-relative links in the docs. Write links as `/docs/...` in both places. To serve it under the old project URL instead, set `SITE_URL=https://three-agent-problem.github.io` and `BASE_PATH=/site`.
 
